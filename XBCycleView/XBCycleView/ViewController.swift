@@ -22,13 +22,7 @@ class ViewController: UIViewController, XBCycleViewDelegate {
         let frame = CGRect(x: 0, y: 100, width: self.view.frame.size.width, height: 180)
         let cycleView: XBCycleView = XBCycleView(frame: frame, imageUrlStringArray: urls)
         
-        
-        //        imgs = [
-        //            CycleViewImageModel(imageUrlString: "http://hiphotos.baidu.com/praisejesus/pic/item/e8df7df89fac869eb68f316d.jpg", localImage: nil),
-        //            CycleViewImageModel(imageUrlString: "http://pic39.nipic.com/20140226/18071023_162553457000_2.jpg", localImage: UIImage(named: "img1.jpg")),
-        //            CycleViewImageModel(imageUrlString: "http://file27.mafengwo.net/M00/B2/12/wKgB6lO0ahWAMhL8AAV1yBFJDJw20.jpeg", localImage: nil)]
-        //        cycleView.imageModelArray = imgs
-        cycleView.autoScrollTimeInterval = 1.5
+        cycleView.autoScrollTimeInterval = 2.5
         //        cycleView.isAutoCycle = false
         cycleView.delegate = self
         self.view.addSubview(cycleView)
