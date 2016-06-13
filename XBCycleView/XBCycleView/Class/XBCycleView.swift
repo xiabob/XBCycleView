@@ -324,6 +324,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
     
     //MARK: - public method
     
+    ///修改PageControl的小圆点颜色值
     public func setPageControl(pageIndicatorTintColor: UIColor,
                                currentPageIndicatorTintColor: UIColor) {
         pageControl.pageIndicatorTintColor = pageIndicatorTintColor

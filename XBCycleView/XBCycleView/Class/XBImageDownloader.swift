@@ -36,8 +36,11 @@ public class XBImageDownloader: NSObject {
     
     private func imageCacheDir() -> String {
         var dirString = ""
-        dirString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true).last!
-        dirString = dirString.stringByAppendingString("/XBImageDownloaderCache")
+        if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory,
+                                                         NSSearchPathDomainMask.UserDomainMask,
+                                                         true).last {
+            dirString = dir.stringByAppendingString("/XBImageDownloaderCache")
+        }
         
         return dirString
     }
@@ -77,7 +80,8 @@ public class XBImageDownloader: NSObject {
         }
         
         //last get image from network
-        dispatch_async(dispatch_get_global_queue(0, 0)) { [unowned self] in
+        let queue = dispatch_queue_create("com.xiabob.XBCycleView", DISPATCH_QUEUE_CONCURRENT)
+        dispatch_async(queue) { [unowned self] in
             if let imageUrl = NSURL(string: url) {
                 if let imageData = NSData(contentsOfURL: imageUrl) {
                     //save to disk

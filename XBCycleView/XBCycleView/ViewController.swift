@@ -18,17 +18,17 @@ class ViewController: UIViewController, XBCycleViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
         let frame = CGRect(x: 0, y: 100, width: self.view.frame.size.width, height: 180)
         let cycleView: XBCycleView = XBCycleView(frame: frame, imageUrlStringArray: urls)
-        
+        //轮播间隔时间
         cycleView.autoScrollTimeInterval = 2.5
-        //        cycleView.isAutoCycle = false
+        //设置代理，监听点击图片的事件
         cycleView.delegate = self
         self.view.addSubview(cycleView)
-        print("did load")
     }
     
+    //代理方法
     func tapImage(cycleView: XBCycleView, currentImage: UIImage?, currentIndex: Int) {
         cycleView.isAutoCycle = true
         imgs = [
@@ -37,7 +37,8 @@ class ViewController: UIViewController, XBCycleViewDelegate {
             XBCycleViewImageModel(imageUrlString: "http://pic39.nipic.com/20140226/18071023_162553457000_2.jpg", localImage: UIImage(named: "img1.jpg")),
             XBCycleViewImageModel(imageUrlString: "http://file27.mafengwo.net/M00/B2/12/wKgB6lO0ahWAMhL8AAV1yBFJDJw20.jpeg", localImage: nil)]
         cycleView.imageModelArray = imgs
-        
+        //修改pageControl的小圆点颜色值
+        cycleView.setPageControl(UIColor.grayColor(), currentPageIndicatorTintColor: UIColor.yellowColor())
         
         print("cycleView:\(cycleView), currentImage:\(currentImage), currentIndex:\(currentIndex)")
     }
