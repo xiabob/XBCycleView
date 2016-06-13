@@ -12,3 +12,5 @@ let cycleView: XBCycleView = XBCycleView(frame: frame, imageUrlStringArray: urls
 
 <p>具体使用，参考示例工程！</p>
 ![image](https://github.com/xiabob/XBCycleView/blob/master/screenshots/sample.gif)
+<p>修改小圆点颜色</p>
+![image](https://github.com/xiabob/XBCycleView/blob/master/screenshots/sample2.PNG)
