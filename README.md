@@ -7,3 +7,5 @@
    let cycleView: XBCycleView = XBCycleView(frame: frame, imageUrlStringArray: urls)
 
 2、view.addSubview(cycleView)
+
+具体使用，参考示例工程！
