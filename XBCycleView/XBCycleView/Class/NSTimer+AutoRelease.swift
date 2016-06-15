@@ -11,7 +11,7 @@ import Foundation
 public typealias executeTimerClosure = ()->()
 
 //将closure封装成一个对象
-class closureObject<T> {
+private class ClosureObject<T> {
     let closure: T?
     init (closure: T?) {
         self.closure = closure
@@ -22,12 +22,12 @@ public extension NSTimer {
     public class func xb_scheduledTimerWithTimeInterval(timeInterval: NSTimeInterval,
                                                         isRepeat: Bool,
                                                         closure: executeTimerClosure?) -> NSTimer {
-        let block = closureObject<executeTimerClosure>(closure: closure)
+        let block = ClosureObject<executeTimerClosure>(closure: closure)
         let timer = NSTimer.scheduledTimerWithTimeInterval(timeInterval,
                                                            target: self,
                                                            selector: #selector(xb_executeTimerBlock),
                                                            userInfo: block,
-                                                           repeats: isRepeat);
+                                                           repeats: isRepeat)
         return timer
     }
     
@@ -39,7 +39,7 @@ public extension NSTimer {
     }
     
     class func xb_executeTimerBlock(timer: NSTimer) {
-        if let block = timer.userInfo as? closureObject<executeTimerClosure> {
+        if let block = timer.userInfo as? ClosureObject<executeTimerClosure> {
             if let closure = block.closure {
                 closure()
             }
