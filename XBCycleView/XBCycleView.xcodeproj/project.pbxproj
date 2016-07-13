@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7429793D1D35D39D009D37D1 /* String+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7429793C1D35D39D009D37D1 /* String+MD5.swift */; };
 		74EB90631D0E714600726928 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB90621D0E714600726928 /* AppDelegate.swift */; };
 		74EB90651D0E714600726928 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB90641D0E714600726928 /* ViewController.swift */; };
 		74EB90681D0E714600726928 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74EB90661D0E714600726928 /* Main.storyboard */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7429793C1D35D39D009D37D1 /* String+MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+MD5.swift"; sourceTree = "<group>"; };
 		74EB905F1D0E714600726928 /* XBCycleView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBCycleView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74EB90621D0E714600726928 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		74EB90641D0E714600726928 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 		74EB90901D0E719D00726928 /* Class */ = {
 			isa = PBXGroup;
 			children = (
+				7429793C1D35D39D009D37D1 /* String+MD5.swift */,
 				74EB90921D0E71C400726928 /* NSTimer+AutoRelease.swift */,
 				74EB90941D0E71EE00726928 /* XBCycleView.swift */,
 				74EB90961D0E721000726928 /* XBCycleViewImageModel.swift */,
@@ -298,6 +301,7 @@
 			files = (
 				74EB90991D0E722600726928 /* XBImageDownloader.swift in Sources */,
 				74EB90651D0E714600726928 /* ViewController.swift in Sources */,
+				7429793D1D35D39D009D37D1 /* String+MD5.swift in Sources */,
 				74EB90951D0E71EE00726928 /* XBCycleView.swift in Sources */,
 				74EB90631D0E714600726928 /* AppDelegate.swift in Sources */,
 				74EB90971D0E721000726928 /* XBCycleViewImageModel.swift in Sources */,
@@ -528,6 +532,7 @@
 				74EB90891D0E714800726928 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		74EB908A1D0E714800726928 /* Build configuration list for PBXNativeTarget "XBCycleViewTests" */ = {
 			isa = XCConfigurationList;
@@ -536,6 +541,7 @@
 				74EB908C1D0E714800726928 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		74EB908D1D0E714800726928 /* Build configuration list for PBXNativeTarget "XBCycleViewUITests" */ = {
 			isa = XCConfigurationList;
@@ -544,6 +550,7 @@
 				74EB908F1D0E714800726928 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
