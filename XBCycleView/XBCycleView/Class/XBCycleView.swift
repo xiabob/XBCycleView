@@ -38,7 +38,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
     
     private var downloader = XBImageDownloader()
     
-    //MARK: - public var
+    //MARK: - public api var
     public var imageModelArray = [XBCycleViewImageModel]() {
         didSet { updateCycleView() }
     }
@@ -222,7 +222,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         let model = imageModelArray[nextIndex]
         if model.localImage == nil && model.imageUrlString != nil {
             downloader.getImageWithUrl(urlString: model.imageUrlString!,
-                                       closure: { [unowned self](image) in
+                                       completeClosure: { [unowned self](image) in
                                         if self.nextIndex ==
                                             self.imageModelArray.indexOf(model) {
                                             self.nextImageView.image = image
@@ -292,7 +292,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         for model in imageModelArray {
             if model.localImage == nil && model.imageUrlString != nil {
                 downloader.getImageWithUrl(urlString: model.imageUrlString!,
-                                           closure: { [unowned self](image) in
+                                           completeClosure: { [unowned self](image) in
                                             if self.currentIndex ==
                                                 self.imageModelArray.indexOf(model) {
                                                 self.currentImageView.image = image
@@ -322,7 +322,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         addTimer()
     }
     
-    //MARK: - public method
+    //MARK: - public api method
     
     ///修改PageControl的小圆点颜色值
     public func setPageControl(pageIndicatorTintColor: UIColor,
