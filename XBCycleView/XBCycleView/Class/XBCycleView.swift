@@ -165,6 +165,8 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
         view.contentSize = CGSize(width: width*3, height: 0)
         view.contentOffset = CGPoint(x: width, y: 0)
         view.isPagingEnabled = true
+        //bounces为true时，用力快速滑动时，scrollView的contentOffset有偏差。
+        view.bounces = false
         view.alwaysBounceHorizontal = false
         view.alwaysBounceVertical = false
         view.showsHorizontalScrollIndicator = false
@@ -261,13 +263,6 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
     
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         addTimer()
-    }
-    
-    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        //用力快速滑动时，scrollView的contentOffset有偏差。（尚未找到原因）
-        if scrollView.contentOffset.x != width {
-            scrollView.setContentOffset(CGPoint(x: width, y: scrollView.contentOffset.y), animated: true)
-        }
     }
     
     //MARK: - add/remove timer
