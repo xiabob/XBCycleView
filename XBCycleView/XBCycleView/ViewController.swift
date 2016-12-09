@@ -29,7 +29,7 @@ class ViewController: UIViewController, XBCycleViewDelegate {
     }
     
     //代理方法
-    func tapImage(cycleView: XBCycleView, currentImage: UIImage?, currentIndex: Int) {
+    func tapImage(_ cycleView: XBCycleView, currentImage: UIImage?, currentIndex: Int) {
         cycleView.isAutoCycle = true
         imgs = [
             XBCycleViewImageModel(imageUrlString: "http://hiphotos.baidu.com/praisejesus/pic/item/e8df7df89fac869eb68f316d.jpg", localImage: nil),
@@ -38,7 +38,7 @@ class ViewController: UIViewController, XBCycleViewDelegate {
             XBCycleViewImageModel(imageUrlString: "http://file27.mafengwo.net/M00/B2/12/wKgB6lO0ahWAMhL8AAV1yBFJDJw20.jpeg", localImage: nil)]
         cycleView.imageModelArray = imgs
         //修改pageControl的小圆点颜色值
-        cycleView.setPageControl(UIColor.grayColor(), currentPageIndicatorTintColor: UIColor.yellowColor())
+        cycleView.setPageControl(UIColor.gray, currentPageIndicatorTintColor: UIColor.yellow)
         
         print("cycleView:\(cycleView), currentImage:\(currentImage), currentIndex:\(currentIndex)")
     }

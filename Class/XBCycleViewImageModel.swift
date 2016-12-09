@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class XBCycleViewImageModel: NSObject {
+open class XBCycleViewImageModel: NSObject {
     ///图片对应的标题
     var title: String?
     

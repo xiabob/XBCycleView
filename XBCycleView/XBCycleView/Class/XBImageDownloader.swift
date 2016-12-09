@@ -9,21 +9,21 @@
 import UIKit
 
 
-public typealias finishClosure = (image: UIImage?) -> ()
+public typealias finishClosure = (_ image: UIImage?) -> ()
 
-public class XBImageDownloader: NSObject {
-    private lazy var imageCache: NSCache = {
-        let cache: NSCache = NSCache()
+open class XBImageDownloader: NSObject {
+    fileprivate lazy var imageCache: NSCache<AnyObject, UIImage> = {
+        let cache = NSCache<AnyObject, UIImage>()
         cache.countLimit = 10
         return cache
     }()
     
-    private lazy var imageCacheDir: String = {
+    fileprivate lazy var imageCacheDir: String = {
         var dirString = ""
-        if let dir = NSSearchPathForDirectoriesInDomains(.CachesDirectory,
-                                                         .UserDomainMask,
+        if let dir = NSSearchPathForDirectoriesInDomains(.cachesDirectory,
+                                                         .userDomainMask,
                                                          true).last {
-            dirString = dir.stringByAppendingString("/XBImageDownloaderCache")
+            dirString = dir + "/XBImageDownloaderCache"
         }
         
         return dirString
@@ -34,59 +34,59 @@ public class XBImageDownloader: NSObject {
         commonInit()
     }
     
-    private func commonInit() {
-        let isCacheDirExist = NSFileManager.defaultManager().fileExistsAtPath(imageCacheDir)
+    fileprivate func commonInit() {
+        let isCacheDirExist = FileManager.default.fileExists(atPath: imageCacheDir)
         if !isCacheDirExist {
             do {
-                try  NSFileManager.defaultManager().createDirectoryAtPath(imageCacheDir, withIntermediateDirectories: true, attributes: nil)
+                try  FileManager.default.createDirectory(atPath: imageCacheDir, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print("XBImageDownloaderCache dir create error")
             }
         }
     }
     
-    private func getImageFromLocal(url: String) -> UIImage? {
+    fileprivate func getImageFromLocal(_ url: String) -> UIImage? {
         let path = imageCacheDir + "/" + url.xb_MD5
-        if let data = NSData(contentsOfFile: path) {
+        if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
             return UIImage(data: data)
         } else {
             return nil
         }
     }
     
-    public func getImageWithUrl(urlString url: String, completeClosure closure: finishClosure) {
+    open func getImageWithUrl(urlString url: String, completeClosure closure: @escaping finishClosure) {
         //first get image from memory
-        if let image = imageCache.objectForKey(url) as? UIImage {
-            closure(image: image)
+        if let image = imageCache.object(forKey: url as AnyObject) {
+            closure(image)
             return
         }
         
         //second get image from local
         if let image = getImageFromLocal(url) {
             //save to memory
-            imageCache.setObject(image, forKey: url)
+            imageCache.setObject(image, forKey: url as AnyObject)
             
-            closure(image: image)
+            closure(image)
             return
         }
         
         //last get image from network
-        let queue = dispatch_queue_create("com.xiabob.XBCycleView", DISPATCH_QUEUE_CONCURRENT)
-        dispatch_async(queue) { [unowned self] in
-            if let imageUrl = NSURL(string: url) {
-                if let imageData = NSData(contentsOfURL: imageUrl) {
+        let queue = DispatchQueue(label: "com.xiabob.XBCycleView", attributes: DispatchQueue.Attributes.concurrent)
+        queue.async { [unowned self] in
+            if let imageUrl = URL(string: url) {
+                if let imageData = try? Data(contentsOf: imageUrl) {
                     //save to disk
-                    imageData.writeToFile(self.imageCacheDir + "/" + url.xb_MD5, atomically: true)
+                    try? imageData.write(to: URL(fileURLWithPath: self.imageCacheDir + "/" + url.xb_MD5), options: [.atomic])
                     
                     let image = UIImage(data: imageData)
                     
                     if image != nil {
                         //save to memory
-                        self.imageCache.setObject(image!, forKey: url)
+                        self.imageCache.setObject(image!, forKey: url as AnyObject)
                     }
                     
-                    dispatch_async(dispatch_get_main_queue(), {
-                        closure(image: image)
+                    DispatchQueue.main.async(execute: {
+                        closure(image)
                     })
                     
                     return
@@ -95,11 +95,11 @@ public class XBImageDownloader: NSObject {
         }
     }
     
-    public func clearCachedImages() {
+    open func clearCachedImages() {
         do {
-            let paths = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(imageCacheDir)
+            let paths = try FileManager.default.contentsOfDirectory(atPath: imageCacheDir)
             for path in paths {
-                try NSFileManager.defaultManager().removeItemAtPath(imageCacheDir + "/" + path)
+                try FileManager.default.removeItem(atPath: imageCacheDir + "/" + path)
             }
         } catch {
             print("XBImageDownloaderCache dir remove error")

@@ -18,12 +18,12 @@ private class ClosureObject<T> {
     }
 }
 
-public extension NSTimer {
-    public class func xb_scheduledTimerWithTimeInterval(timeInterval: NSTimeInterval,
+public extension Timer {
+    public class func xb_scheduledTimerWithTimeInterval(_ timeInterval: TimeInterval,
                                                         isRepeat: Bool,
-                                                        closure: executeTimerClosure?) -> NSTimer {
+                                                        closure: executeTimerClosure?) -> Timer {
         let block = ClosureObject<executeTimerClosure>(closure: closure)
-        let timer = NSTimer.scheduledTimerWithTimeInterval(timeInterval,
+        let timer = Timer.scheduledTimer(timeInterval: timeInterval,
                                                            target: self,
                                                            selector: #selector(xb_executeTimerBlock),
                                                            userInfo: block,
@@ -31,14 +31,14 @@ public extension NSTimer {
         return timer
     }
     
-    public class func xb_scheduledTimerWithTimeInterval(timeInterval: NSTimeInterval,
-                                                        closure: executeTimerClosure?) -> NSTimer {
+    public class func xb_scheduledTimerWithTimeInterval(_ timeInterval: TimeInterval,
+                                                        closure: executeTimerClosure?) -> Timer {
         return xb_scheduledTimerWithTimeInterval(timeInterval,
                                                  isRepeat: false,
                                                  closure: closure)
     }
     
-    class func xb_executeTimerBlock(timer: NSTimer) {
+    class func xb_executeTimerBlock(_ timer: Timer) {
         if let block = timer.userInfo as? ClosureObject<executeTimerClosure> {
             if let closure = block.closure {
                 closure()

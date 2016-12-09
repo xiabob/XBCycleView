@@ -9,41 +9,41 @@
 import UIKit
 
 public protocol XBCycleViewDelegate: NSObjectProtocol {
-    func tapImage(cycleView: XBCycleView, currentImage: UIImage?, currentIndex: Int)
+    func tapImage(_ cycleView: XBCycleView, currentImage: UIImage?, currentIndex: Int)
 }
 
-public class XBCycleView: UIView, UIScrollViewDelegate {
+open class XBCycleView: UIView, UIScrollViewDelegate {
     //MARK: - private var
     //size
-    private var width: CGFloat = 0
-    private var height: CGFloat = 0
+    fileprivate var width: CGFloat = 0
+    fileprivate var height: CGFloat = 0
     
     //index
-    private var currentIndex: Int = 0
-    private var nextIndex: Int = 0
+    fileprivate var currentIndex: Int = 0
+    fileprivate var nextIndex: Int = 0
     
     //subviews
-    private lazy var scrollView: UIScrollView = self.configScrollView()
-    private lazy var currentImageView: UIImageView = self.configImageView()
-    private lazy var nextImageView: UIImageView = self.configImageView()
-    private lazy var pageControl: UIPageControl = self.configPageControl()
-    private lazy var tapGesture: UITapGestureRecognizer = { [unowned self] in
+    fileprivate lazy var scrollView: UIScrollView = self.configScrollView()
+    fileprivate lazy var currentImageView: UIImageView = self.configImageView()
+    fileprivate lazy var nextImageView: UIImageView = self.configImageView()
+    fileprivate lazy var pageControl: UIPageControl = self.configPageControl()
+    fileprivate lazy var tapGesture: UITapGestureRecognizer = { [unowned self] in
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                                  action: #selector(tapImageView))
         return tap
         }()
     
     //timer
-    private var timer: NSTimer?
+    fileprivate var timer: Timer?
     
-    private var downloader = XBImageDownloader()
+    fileprivate var downloader = XBImageDownloader()
     
-    //MARK: - public var
-    public var imageModelArray = [XBCycleViewImageModel]() {
+    //MARK: - public api var
+    open var imageModelArray = [XBCycleViewImageModel]() {
         didSet { updateCycleView() }
     }
     ///是否是自动循环轮播，默认为true
-    public var isAutoCycle: Bool = true {
+    open var isAutoCycle: Bool = true {
         didSet {
             if isAutoCycle {
                 addTimer()
@@ -54,12 +54,12 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
     }
     
     ///自动轮播的时间间隔，默认是2s。如果设置这个参数，之前不是自动轮播，现在就变成了自动轮播
-    public var autoScrollTimeInterval: NSTimeInterval = 2 {
+    open var autoScrollTimeInterval: TimeInterval = 2 {
         didSet { isAutoCycle = true }
     }
     
     ///处理图片点击事件的代理
-    weak public var delegate: XBCycleViewDelegate?
+    weak open var delegate: XBCycleViewDelegate?
     
     //MARK: - init cycle
     public override init(frame: CGRect) {
@@ -137,7 +137,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         scrollView.removeGestureRecognizer(tapGesture)
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         width = frame.size.width
         height = frame.size.height
         
@@ -147,7 +147,7 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
     }
     
     //MARK: - config views
-    private func configViews() {
+    fileprivate func configViews() {
         addSubview(scrollView)
         scrollView.addSubview(currentImageView)
         scrollView.addSubview(nextImageView)
@@ -156,27 +156,27 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         scrollView.addGestureRecognizer(tapGesture)
     }
     
-    private func configScrollView() -> UIScrollView {
+    fileprivate func configScrollView() -> UIScrollView {
         let rect = CGRect(x: 0, y: 0, width: width, height: height)
         let view: UIScrollView = UIScrollView(frame: rect)
         view.contentSize = CGSize(width: width*3, height: 0)
         view.contentOffset = CGPoint(x: width, y: 0)
-        view.pagingEnabled = true
+        view.isPagingEnabled = true
         view.showsHorizontalScrollIndicator = false
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         view.delegate = self
         
         return view;
     }
     
-    private func configImageView() -> UIImageView {
+    fileprivate func configImageView() -> UIImageView {
         let imageView: UIImageView = UIImageView(frame: CGRect(x: width, y: 0, width: width, height: height))
-        imageView.contentMode = UIViewContentMode.ScaleAspectFill
+        imageView.contentMode = UIViewContentMode.scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
     }
     
-    private func configPageControl() -> UIPageControl {
+    fileprivate func configPageControl() -> UIPageControl {
         let pageControl: UIPageControl = UIPageControl()
         pageControl.currentPage = currentIndex
         pageControl.hidesForSinglePage = true
@@ -184,24 +184,24 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
     }
     
     //MARK: - set layout
-    private func setPageControlLayout() {
+    fileprivate func setPageControlLayout() {
         //pageControl
         pageControl.numberOfPages = imageModelArray.count
         pageControl.currentPage = currentIndex
-        let size = pageControl.sizeForNumberOfPages(pageControl.numberOfPages)
+        let size = pageControl.size(forNumberOfPages: pageControl.numberOfPages)
         let point = CGPoint(x: width/2 - size.width/2, y: height - size.height)
         pageControl.frame = CGRect(origin: point, size: size)
     }
     
     //MARK: - update model array and page control
-    private func updateCycleView() {
+    fileprivate func updateCycleView() {
         setImageModelArray()
         setPageControlLayout()
     }
     
     
     //MARK: - UIScrollViewDelegate
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offset: CGFloat = scrollView.contentOffset.x
         if offset < width {  //right
             nextImageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
@@ -222,9 +222,9 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         let model = imageModelArray[nextIndex]
         if model.localImage == nil && model.imageUrlString != nil {
             downloader.getImageWithUrl(urlString: model.imageUrlString!,
-                                       closure: { [unowned self](image) in
+                                       completeClosure: { [unowned self](image) in
                                         if self.nextIndex ==
-                                            self.imageModelArray.indexOf(model) {
+                                            self.imageModelArray.index(of: model) {
                                             self.nextImageView.image = image
                                         }
                 })
@@ -234,31 +234,31 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         }
     }
     
-    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         removeTimer()
     }
     
-    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         addTimer()
     }
     
     //MARK: - add/remove timer
-    private func addTimer() {
+    fileprivate func addTimer() {
         if isAutoCycle && imageModelArray.count > 1 {
             if timer != nil {
                 removeTimer()
             }
             
-            timer = NSTimer.xb_scheduledTimerWithTimeInterval(autoScrollTimeInterval,
+            timer = Timer.xb_scheduledTimerWithTimeInterval(autoScrollTimeInterval,
                                                               isRepeat: true,
                                                               closure: { [unowned self] in
                                                                 self.autoCycle()
                 })
-            NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
+            RunLoop.current.add(timer!, forMode: RunLoopMode.commonModes)
         }
     }
     
-    private func removeTimer() {
+    fileprivate func removeTimer() {
         if timer != nil {
             timer!.invalidate()
             timer = nil
@@ -266,40 +266,40 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
     }
     
     //MARK: - add/remove notification
-    private func addNotification() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(stopTimer), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(startTimer), name: UIApplicationWillEnterForegroundNotification, object: nil)
+    fileprivate func addNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(stopTimer), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(startTimer), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
-    private func removeNotification() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
+    fileprivate func removeNotification() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     //MARK: - action
-    private func autoCycle() {
+    fileprivate func autoCycle() {
         scrollView.setContentOffset(CGPoint(x: 2*width, y: 0), animated: true)
     }
     
-    private func nextPage() {
+    fileprivate func nextPage() {
         currentImageView.image = nextImageView.image
         scrollView.contentOffset = CGPoint(x: width, y: 0)
         currentIndex = nextIndex
         pageControl.currentPage = currentIndex
     }
     
-    private func setImageModelArray() {
+    fileprivate func setImageModelArray() {
         for model in imageModelArray {
             if model.localImage == nil && model.imageUrlString != nil {
                 downloader.getImageWithUrl(urlString: model.imageUrlString!,
-                                           closure: { [unowned self](image) in
+                                           completeClosure: { [unowned self](image) in
                                             if self.currentIndex ==
-                                                self.imageModelArray.indexOf(model) {
+                                                self.imageModelArray.index(of: model) {
                                                 self.currentImageView.image = image
                                             }
                     })
             } else {
-                if currentIndex == imageModelArray.indexOf(model) {
+                if currentIndex == imageModelArray.index(of: model) {
                     currentImageView.image = model.localImage
                 }
             }
@@ -322,10 +322,10 @@ public class XBCycleView: UIView, UIScrollViewDelegate {
         addTimer()
     }
     
-    //MARK: - public method
+    //MARK: - public api method
     
     ///修改PageControl的小圆点颜色值
-    public func setPageControl(pageIndicatorTintColor: UIColor,
+    open func setPageControl(_ pageIndicatorTintColor: UIColor,
                                currentPageIndicatorTintColor: UIColor) {
         pageControl.pageIndicatorTintColor = pageIndicatorTintColor
         pageControl.currentPageIndicatorTintColor = currentPageIndicatorTintColor
