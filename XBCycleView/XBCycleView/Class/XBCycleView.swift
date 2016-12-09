@@ -58,6 +58,9 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
         didSet { isAutoCycle = true }
     }
     
+    ///默认是false，如果值为true，表示完全滚动到下一页才改变PageControl的currentPage
+    open var isChangePageControlDelay = false
+    
     ///处理图片点击事件的代理
     weak open var delegate: XBCycleViewDelegate?
     
@@ -162,6 +165,8 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
         view.contentSize = CGSize(width: width*3, height: 0)
         view.contentOffset = CGPoint(x: width, y: 0)
         view.isPagingEnabled = true
+        view.alwaysBounceHorizontal = false
+        view.alwaysBounceVertical = false
         view.showsHorizontalScrollIndicator = false
         view.backgroundColor = UIColor.white
         view.delegate = self
@@ -207,12 +212,28 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
             nextImageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
             nextIndex = (currentIndex - 1) < 0 ? imageModelArray.count - 1 : (currentIndex - 1)
             
+            if isChangePageControlDelay == false {
+                if offset <= 0.5 * width {
+                    pageControl.currentPage = nextIndex
+                } else {
+                    pageControl.currentPage = currentIndex
+                }
+            }
+            
             if offset <= 0 {
                 nextPage()
             }
         } else if offset > width { //left
             nextImageView.frame = CGRect(x: 2*width, y: 0, width: width, height: height)
             nextIndex = (currentIndex + 1) > imageModelArray.count - 1 ? 0 : (currentIndex + 1)
+            
+            if isChangePageControlDelay == false {
+                if offset <= 1.5 * width {
+                    pageControl.currentPage = currentIndex
+                } else {
+                    pageControl.currentPage = nextIndex
+                }
+            }
             
             if offset >= 2 * width {
                 nextPage()
@@ -242,6 +263,13 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
         addTimer()
     }
     
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        //用力快速滑动时，scrollView的contentOffset有偏差。（尚未找到原因）
+        if scrollView.contentOffset.x != width {
+            scrollView.setContentOffset(CGPoint(x: width, y: scrollView.contentOffset.y), animated: true)
+        }
+    }
+    
     //MARK: - add/remove timer
     fileprivate func addTimer() {
         if isAutoCycle && imageModelArray.count > 1 {
@@ -254,7 +282,7 @@ open class XBCycleView: UIView, UIScrollViewDelegate {
                                                               closure: { [unowned self] in
                                                                 self.autoCycle()
                 })
-            RunLoop.current.add(timer!, forMode: RunLoopMode.commonModes)
+            RunLoop.current.add(timer!, forMode: .commonModes)
         }
     }
     
